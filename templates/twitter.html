@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+{% load i18n utility %}
+{% block title %}{% trans 'Twitter Dashboard' %}{% endblock %}
+{% block js %}
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script>
+        function plotBarGraph(x, y, title, xaxis_title, yaxis_title, graph_id) {
+            var data = [
+                {
+                    x: x,
+                    y: y,
+                    type: 'bar',
+                    autosize: true,
+                    marker: {
+                        color: '#0000CC'
+                    },
+                    name: title
+                }
+            ];
+            var layout = {
+                title: title,
+                showlegend: true,
+                xaxis: {
+                    title: xaxis_title
+                },
+                yaxis: {
+                    title: yaxis_title
+                }
+            };
+
+            Plotly.newPlot(graph_id, data, layout, {
+                modeBarButtonsToRemove: ['sendDataToCloud'],
+                displaylogo: false
+            });
+        }
+    </script>
+    {% if tweets %}
+        <script>
+            $(function () {
+                plotBarGraph({{ analysis.timeline.date|safe }}, {{ analysis.timeline.count}},
+                    '{% trans 'Tweets Timeline' %}', '{% trans 'Timeline Date' %}', '{% trans 'No. of tweets' %}', 'twitter-timeline');
+                plotBarGraph({{ analysis.hashtags_count.tag|safe }}, {{ analysis.hashtags_count.count }},
+                    '{% trans 'Your hashtags count' %}', '{% trans '#Hashtags name' %}', '{% trans 'No. of times hashtag used in tweets' %}', 'twitter-hashtags');
+            });
+
+
+        </script>
+    {% endif %}
+{% endblock %}
+{% block content %}
+    <main>
+        <div class="container">
+            <div class="section">
+                <h4 class="header center">{% trans 'Twitter Dashboard' %}</h4>
+                {% if username %}
+                    <div class="row clearfix card">
+                        <div class="header center">
+                            <h5>{{ profile.name|title }} {% trans 'Profile' %}</h5>
+                        </div>
+                        <div class="col l12 s12 m12"
+                             style="background-image: url({{ profile.profile_banner_url }});min-height: 350px;">
+                            <div class="body">
+                                <img src="{{ profile.profile_image_url|get_image }}"
+                                     class="responsive-img circle" style="max-height: 200px">
+                            </div>
+                        </div>
+                        <div class="col l12 s12 m12">
+                            <div class="body bg-white center" style="color: #{{ profile.profile_link_color }}">
+                                <h3> {{ profile.name }} <a href="https://twitter.com/{{ profile.screen_name }}"
+                                                           target="_blank">
+                                    (@{{ profile.screen_name }})</a>{% if profile.verified %}
+                                    <i class="material-icons">verified_user</i>{% endif %}
+                                </h3>
+                                {% if profile.description %}<h4>{{ profile.description }}</h4>{% endif %}
+                                {% if profile.location %}<h4>{{ profile.location }}</h4>{% endif %}
+                                {% if profile.url %}
+                                    <h4><a href="{{ profile.url }}" target="_blank">{{ profile.url }}</a>
+                                    </h4>{% endif %}
+                            </div>
+                        </div>
+                        {% if tweets %}
+                            <div class="col l12 s12 m12">
+                                <div class="header">
+                                    <h5>{% trans 'Profile Overview' %}</h5>
+                                </div>
+                                <div class="row center " style="color: #{{ profile.profile_link_color }}">
+                                    <div class="col s12 m6 l3">
+                                        <div class="card">
+                                            <div class="card-content">
+                                                <p class="card-stats-title"><i
+                                                        class="mdi-social-group-add"></i> {% trans 'Total Tweets' %}</p>
+                                                <h4 class="card-stats-number">{{ profile.statuses_count }}</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col s12 m6 l3">
+                                        <div class="card">
+                                            <div class="card-content">
+                                                <p class="card-stats-title"><i
+                                                        class="mdi-editor-insert-drive-file"></i> {% trans 'Followers' %}
+                                                </p>
+                                                <h4 class="card-stats-number">{{ profile.followers_count }}</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col s12 m6 l3">
+                                        <div class="card">
+                                            <div class="card-content">
+                                                <p class="card-stats-title"><i
+                                                        class="mdi-action-trending-up"></i> {% trans 'Following' %}</p>
+                                                <h4 class="card-stats-number">{{ profile.friends_count }}</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col s12 m6 l3">
+                                        <div class="card">
+                                            <div class="card-content">
+                                                <p class="card-stats-title"><i
+                                                        class="mdi-editor-attach-money"></i>{% trans 'Likes' %}</p>
+                                                <h4 class="card-stats-number">{{ profile.favourites_count }}</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col l12 s12 m12">
+                                <div class="header">
+                                    <h5>{% trans 'Timeline of Tweets' %}</h5>
+                                </div>
+                                <div class="row">
+                                    <div class="body">
+                                        <div id="twitter-timeline"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col l12 s12 m12">
+                                <div class="header">
+                                    <h5>{% trans 'Hashtags details' %}</h5>
+                                </div>
+                                <div class="row">
+                                    <div class="body">
+                                        <div id="twitter-hashtags" style="height: 700px"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="col l12 s12 m12 center">
+                                <h4>{% trans 'No tweets found' %}</h4>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+{% endblock %}

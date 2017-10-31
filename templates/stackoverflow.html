@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans 'StackOverFlow Scraping' %}{% endblock %}
+{% block content %}
+    <section id="content">
+        <div class="container">
+            <div class="section">
+                <div id="stackoverflow" class="section center">
+                    <form method="get" action=".">
+                        <h4 class="header">{% trans 'Scrape Stackoverflow data' %}</h4>
+                        <div class="row">
+                            <div class="col s12">
+                                <input class="with-gap" name="type" type="radio" value="questions" id="questions"/>
+                                <label for="questions">{% trans 'Latest Question' %}</label>
+                                <input class="with-gap" name="type" type="radio" value="tags" id="tags"/>
+                                <label for="tags">{% trans 'Popular Tags' %}</label>
+                                <input class="with-gap" name="type" type="radio" value="users" id="users"/>
+                                <label for="users">{% trans 'Top Users' %}</label>
+                                <input class="with-gap" name="type" type="radio" value="tag_users" id="tag_users"/>
+                                <label for="tag_users">{% trans 'Top users of Tag' %}</label>
+                            </div>
+                        </div>
+                        <div class="row" id="tag-users" style="display: none">
+                            <div class="input-field col s6 offset-s3">
+                                <input disabled="disabled" value="django" id="tagname" type="text" name="tagname"
+                                       class="validate">
+                                <label class="active" for="tag">{% trans 'Enter tag name' %}</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col s12">
+                                <button class="btn waves-effect waves-light" type="submit">Submit
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    {% if data %}
+                        <div class="col s6 offset-s3">
+                            <table>
+                                <thead>
+                                <tr>
+                                    <th>{% trans 'No.' %}</th>
+                                    {% for key in keys %}
+                                        <th>{{ key }}</th>
+                                    {% endfor %}
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                {% for row in data %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        {% for content in row %}
+                                            <td>{{ content }}</td>
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+{% block js %}
+    <script>
+        $(document).ready(function () {
+            $('input[name=type]').change(function () {
+                if (this.value == 'tag_users') {
+                    $("#tag-users").show();
+                    $('#tagname').removeAttr('disabled')
+                }
+                else {
+                    $("#tag-users").hide();
+                    $('#tagname').attr('disabled', true);
+                }
+            });
+        })
+    </script>
+{% endblock %}
