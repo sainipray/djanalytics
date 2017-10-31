@@ -2,11 +2,19 @@
 Analytics Project
 ==============================
 
+This project showing Twitter User details and some analysis graphs using API and scraping data from StackOverFlow
+Website like: Latest Questions, Top users, Top tags etc.
+
+=================
+Used Libraries
+=================
+
+Pandas, Matplotlib, Jupyter, Beautifulsoup4, Requests, Tweepy
+
 To use this project follow these steps:
 
 #. Create your working environment
 #. Install dependencies
-
 
 Working Environment
 ===================
