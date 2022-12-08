@@ -3,7 +3,7 @@ backports.functools-lru-cache==1.4
 backports.shutil-get-terminal-size==1.0.0
 beautifulsoup4==4.6.0
 bleach==2.1.1
-certifi==2017.7.27.1
+certifi==2022.12.7
 chardet==3.0.4
 configparser==3.5.0
 cycler==0.10.0
